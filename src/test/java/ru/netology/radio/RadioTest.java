@@ -5,10 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 public class RadioTest {
+    Radio radio = new Radio();
+
 
     @Test
     public void shouldSetStation() {
-        Radio radio = new Radio();
 
         radio.setCurrentStation(5);
 
@@ -17,7 +18,6 @@ public class RadioTest {
 
     @Test
     public void shouldSetNextStation() {
-        Radio radio = new Radio();
 
         radio.setCurrentStation(5);
 
@@ -28,7 +28,6 @@ public class RadioTest {
 
     @Test
     public void shouldSetPrevStation() {
-        Radio radio = new Radio();
 
         radio.setCurrentStation(5);
 
@@ -39,7 +38,6 @@ public class RadioTest {
 
     @Test
     public void shouldNotSetNextAbove9() {
-        Radio radio = new Radio();
 
         radio.setCurrentStation(9);
 
@@ -50,7 +48,6 @@ public class RadioTest {
 
     @Test
     public void shouldNotSetPrevBelow0() {
-        Radio radio = new Radio();
 
         radio.setCurrentStation(0);
 
@@ -61,7 +58,6 @@ public class RadioTest {
 
     @Test
     public void shouldNotSetStationAbove9() {
-        Radio radio = new Radio();
 
         int currentStation = radio.getCurrentStation();
 
@@ -73,7 +69,6 @@ public class RadioTest {
 
     @Test
     public void shouldNotSetStationBelow0() {
-        Radio radio = new Radio();
 
         int currentStation = radio.getCurrentStation();
 
@@ -84,7 +79,6 @@ public class RadioTest {
 
     @Test
     public void shouldSetNextStationWhenBoundary() {
-        Radio radio = new Radio();
 
         radio.setCurrentStation(8);
 
@@ -95,7 +89,6 @@ public class RadioTest {
 
     @Test
     public void shouldSetPrevStationWhenBoundary() {
-        Radio radio = new Radio();
 
         radio.setCurrentStation(1);
 
@@ -106,7 +99,6 @@ public class RadioTest {
 
     @Test
     public void shouldIncreaseVolume() {
-        Radio radio = new Radio();
 
         radio.setCurrentVolume(0);
 
@@ -117,53 +109,36 @@ public class RadioTest {
 
     @Test
     public void shouldDecreaseVolume() {
-        Radio radio = new Radio();
 
-        radio.setCurrentVolume(10);
+        radio.setCurrentVolume(100);
 
         radio.decreaseVolume();
 
-        assertEquals(9, radio.getCurrentVolume());
+        assertEquals(99, radio.getCurrentVolume());
     }
 
     @Test
-    public void shouldNotSetVolumeBelow0() {
-        Radio radio = new Radio();
+    public void shouldIncreaseVolumeWhenBoundary() {
 
-        int currentVolume =  radio.getCurrentVolume();
-
-        radio.setCurrentVolume(-1);
-
-        assertEquals(currentVolume, radio.getCurrentVolume());
-    }
-
-    @Test
-    public void shouldNotSetVolumeAbove10() {
-        Radio radio = new Radio();
-
-        int currentVolume = radio.getCurrentVolume();
-        ;
-
-        radio.setCurrentVolume(11);
-
-        assertEquals(currentVolume, radio.getCurrentVolume());
-    }
-
-
-    @Test
-    public void shouldNotIncreaseVolumeAbove10() {
-        Radio radio = new Radio();
-
-        radio.setCurrentVolume(10);
+        radio.setCurrentVolume(99);
 
         radio.increaseVolume();
 
-        assertEquals(10, radio.getCurrentVolume());
+        assertEquals(100, radio.getCurrentVolume());
     }
 
     @Test
-    public void shouldNotDecreaseVolumeBelow0() {
-        Radio radio = new Radio();
+    public void shouldDecreaseVolumeWhenBoundary() {
+
+        radio.setCurrentVolume(1);
+
+        radio.decreaseVolume();
+
+        assertEquals(0, radio.getCurrentVolume());
+    }
+
+    @Test
+    public void shouldNotIncreaseVolumeWhenMax() {
 
         radio.setCurrentVolume(0);
 
@@ -173,25 +148,85 @@ public class RadioTest {
     }
 
     @Test
-    public void shouldIncreaseVolumeWhenBoundary() {
-        Radio radio = new Radio();
+    public void shouldNotDecreaseVolumeWhenMin() {
 
-        radio.setCurrentVolume(9);
+        radio.setCurrentVolume(100);
 
         radio.increaseVolume();
 
-        assertEquals(10, radio.getCurrentVolume());
+        assertEquals(100, radio.getCurrentVolume());
     }
 
     @Test
-    public void shouldDecreaseVolumeWhenBoundary() {
-        Radio radio = new Radio();
+    public void shouldNotSetVolumeBelowMin() {
 
-        radio.setCurrentVolume(1);
+        int currentVolume = radio.getCurrentVolume();
 
-        radio.decreaseVolume();
+        radio.setCurrentVolume(-1);
 
-        assertEquals(0, radio.getCurrentVolume());
+        assertEquals(currentVolume, radio.getCurrentVolume());
     }
 
+    @Test
+    public void shouldNotSetVolumeAboveMax() {
+
+        int currentVolume = radio.getCurrentVolume();
+
+        radio.setCurrentVolume(101);
+
+        assertEquals(currentVolume, radio.getCurrentVolume());
+    }
+
+    @Test
+    public void shouldSetStationWhenCustomNumberOfStations() {
+        Radio radio = new Radio(48);
+
+        radio.setCurrentStation(24);
+
+        assertEquals(24, radio.getCurrentStation());
+    }
+
+    @Test
+    public void shouldSetTo0AfterMaxStation() {
+        Radio radio = new Radio(48);
+
+        radio.setCurrentStation(47);
+
+        radio.next();
+
+        assertEquals(0, radio.getCurrentStation());
+    }
+
+    @Test
+    public void shouldSetToMaxBefore0Station() {
+        Radio radio = new Radio(48);
+
+        radio.setCurrentStation(0);
+
+        radio.prev();
+
+        assertEquals(47, radio.getCurrentStation());
+    }
+
+    @Test
+    public void shouldNotSetStationAboveMax() {
+        Radio radio = new Radio(48);
+
+        int currentStation = radio.getCurrentStation();
+
+        radio.setCurrentStation(48);
+
+        assertEquals(currentStation, radio.getCurrentStation());
+    }
+
+    @Test
+    public void shouldSetNextStationWhenBoundaryCustom() {
+        Radio radio = new Radio(48);
+
+        radio.setCurrentStation(46);
+
+        radio.next();
+
+        assertEquals(47, radio.getCurrentStation());
+    }
 }
